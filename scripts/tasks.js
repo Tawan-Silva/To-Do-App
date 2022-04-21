@@ -4,7 +4,6 @@ const newTask = document.getElementById("newTask");
 const tasksToDo = document.getElementById("tasksToDo");
 const skeleton = document.getElementById("skeleton");
 const finishedTasks = document.getElementById("finishedTasks");
-
 const settings = {
   method: "GET",
   headers: {
@@ -34,7 +33,6 @@ function getTasks() {
 
       tasksToDo.innerHTML = "";
       finishedTasks.innerHTML = "";
-
       for (index of info) {
         console.log(index.description, index.completed, index.createdAt);
         const dateFormat = new Date(index.createdAt).toLocaleDateString(
@@ -47,9 +45,10 @@ function getTasks() {
         );
         if (index.completed === false) {
           tasksToDo.innerHTML += `<li class="tarefa">
-            <div class="not-done" title="adicionar a tarefas terminadas">
-            <button class="not-complete" onclick="sweetAlert(${index.id}, true)"><i class="ri-check-double-fill"></i></button></div>
-            <div class="descricao" title="tarefa pendente">
+            <div class="not-done" onclick="sweetAlertTaskFinished(${index.id}, true)">
+            <button class="not-complete"><i class="ri-check-double-fill"></i></button>
+            </div>
+            <div class="descricao">
               <p class="nome">${index.description}</p>
               <p class="timestamp">${dateFormat}</p>
             </div>
@@ -57,12 +56,13 @@ function getTasks() {
           `;
         } else {
           finishedTasks.innerHTML += `<li class="tarefa">
-            <div class="not-done" onclick="putTasks(${index.id}, false)" title="adicionar a tarefas pendentes">
-            <button class="complete"><i class="ri-check-double-fill"></i></button></div>
-            <div class="descricao" title="tafera terminada">
-              <p class="nome" id="${index.id}">${index.description} </p>
+            <div class="not-done" onclick="sweetAlertTaskUnFinished(${index.id}, false)">
+            <button class="not-complete"><i class="ri-check-double-fill"></i></button>
+            </div>
+            <div class="descricao">
+              <p class="nome" id="${index.id}">${index.description}</p>
               <p class="timestamp">${dateFormat}
-              <i class="ri-delete-bin-line" title="exluir tarefa" onclick="deleteConfirm()"></i>
+              <i class="ri-delete-bin-line" onclick="deleteConfirm(${index.id})"></i>
               </p>
             </div>
           </li>
@@ -76,7 +76,6 @@ function getTasks() {
 }
 
 function postTasks() {
-
   const data = {
     description: newTask.value,
     completed: false,
@@ -95,13 +94,14 @@ function postTasks() {
     .then((response) => response.json())
     .then((info) => {
       console.log(info);
+      skeleton.style.display = "visible";
       const dateFormat = new Date(info.createdAt).toLocaleDateString("pt-BR", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       });
       tasksToDo.innerHTML += `<li class="tarefa">
-          <div class="not-done" onclick="sweetAlert()">
+          <div class="not-done"  onclick="sweetAlertTaskFinished(${info.id}, true)">
           <button class="not-complete"><i class="ri-check-double-fill"></i></button>
           </div>
           <div class="descricao">
@@ -143,27 +143,6 @@ function putTasks(id, status) {
     });
 }
 
-function deleteConfirm() {
-  Swal.fire({
-    title: 'Tem certeza?',
-    text: "Você não será capaz de reverter isso!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sim, exclua!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      deleteTasks(index.id)
-      Swal.fire(
-        'Deleted!',
-        'Your file has been deleted.',
-        'success'
-      )
-    }
-  })
-}
-
 function deleteTasks(id) {
   const settings = {
     method: "DELETE",
@@ -184,6 +163,42 @@ function deleteTasks(id) {
     });
 }
 
+function deleteConfirm(id) {
+  Swal.fire({
+    title: "Tem certeza?",
+    text: "Você não será capaz de reverter isso!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sim, exclua!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteTasks(id);
+      Swal.fire("Deletada!", "Sua tarefa foi deletada.", "success");
+    }
+  });
+}
+
+function off() {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
+  Toast.fire({
+    icon: "success",
+    title: "Deslogado com sucesso!",
+  });
+}
+
 function closeApp() {
   off();
   setTimeout(() => {
@@ -193,33 +208,14 @@ function closeApp() {
   }, 1000);
 }
 
-function off() {
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 1000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-  })
-
-  Toast.fire({
-    icon: 'success',
-    title: 'Deslogado com sucesso!'
-  })
-}
-
 function validInput() {
   if (newTask.value == "") {
     return Swal.fire({
-      icon: 'error',
-      title: 'Nova da tarefa inválida!',
-      text: 'Digite uma tarefa!',
-      footer: '<a href="">Why do I have this issue?</a>'
-    })
+      icon: "error",
+      title: "Nome da tarefa inválido!",
+      text: "Dê um nome à tarefa!",
+      footer: '<a href="">Why do I have this issue?</a>',
+    });
   } else {
     setTimeout(() => {
       postTasks();
@@ -227,28 +223,42 @@ function validInput() {
   }
 }
 
-function sweetAlert(id, status) {
+function sweetAlertTaskFinished(id, status) {
   Swal.fire({
-    title: 'Tem certeza?',
-    text: "Deseja terminar está tarefa?",
-    icon: 'warning',
+    title: "Tem certeza?",
+    text: "Deseja terminar esta tarefa?",
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar'
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirmar",
   }).then((result) => {
     setTimeout(() => {
       if (result.isConfirmed) {
         putTasks(id, status);
-        Swal.fire(
-          'Tarefa terminada!',
-          'Você terminou uma tarefa.',
-          'success'
-        )
+        Swal.fire("Tarefa terminada!", "Você terminou uma tarefa.", "success");
       }
     }, 1500);
+  });
+}
 
-  })
+function sweetAlertTaskUnFinished(id, status) {
+  Swal.fire({
+    title: "Tem certeza?",
+    text: "Deseja retomar esta tarefa?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirmar",
+  }).then((result) => {
+    setTimeout(() => {
+      if (result.isConfirmed) {
+        putTasks(id, status);
+        Swal.fire("Tarefa retomada!", "Você retomou uma tarefa.", "success");
+      }
+    }, 1500);
+  });
 }
 
 (window.onload = getMe()), getTasks();
