@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do App</title>
+
+  <!-- ---------------- estilos compartilhados entre login e signup ---------------- -->
+  <link rel="stylesheet" href="styles/acesso.css">
+
+     <!-- ---------------- Sweetalert2 lib ---------------- -->
+     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- ---------------------- lógica aplicada no registro -------------------- -->
+  <!-- <script src="/scripts/utils.js"></script>
+  <script src="/scripts/signup.js"></script> -->
+
+</head>
+
+<body>
+
+  <div class="left">
+    <img src="./assets/pessoa-signup.png" alt="">
+  </div>
+  <div class="right">
+    <form autocomplete="off" id="form">
+      <div class="form-header">
+        <p>To-Do App</p>
+      </div>
+
+      <div class="control">
+        <label>Nome:</label>
+        <input type="text" id="nameInput">
+        <small class="errorName" id="errorName"></small>
+      </div>
+
+      <div class="control">
+        <label>Sobrenome: </label>
+        <input type="text" id="LastNameInput">
+        <small class="errorLastName" id="errorLastName"></small>
+      </div>
+
+      <div class="control">
+        <label>Email:</label>
+        <input type="text" id="emailInput">
+        <small class="errorEmail" id="errorEmail"></small>
+      </div>
+
+      <div class="control">
+        <label>Senha:</label>
+        <input type="password" id="passwordInput">
+        <small class="errorPwd" id="errorPwd"></small>
+      </div>
+
+      <div class="control">
+        <label>Repetir senha:</label>
+        <input type="password" id="passwordInput2">
+        <small class="errorPwdTwo" id="errorPwdTwo"></small>
+      </div>
+
+
+      <button type="button" id="button" onclick="sign()">Criar conta</button>
+
+    </form>
+    <div class="ingressar">
+      <a href="index.html">Já possui conta? Acesse aqui</a>
+    </div>
+  </div>
+  <script src="./scripts/signUp.js"></script>
+</body>
+
+</html>

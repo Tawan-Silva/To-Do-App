@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do App</title>
+   
+  <!-- ---------------- estilos compartilhados entre login e signup ---------------- -->
+  <link rel="stylesheet" href="styles/acesso.css">
+
+   <!-- ---------------- Sweetalert2 lib ---------------- -->
+   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+  
+  <div id="barra-de-carregamentor"> 
+    <div id="load"></div> 
+</div>
+  <div class="left">
+    <img src="./assets/pessoa-login.png" alt="">
+  </div>
+  <div class="loader-container">
+  <div class="loader">Loading...</div>
+</div>
+  <div class="right">
+    <form>
+      <div class="form-header" id="form">
+        <p>To-Do App</p>
+      </div>
+      <h1>Acessar</h1>
+
+      <div class="control">
+        <label>Email:</label>
+        <input type="text" id="emailInput">
+        <small class="errorEmail" id="errorEmail"></small>
+      </div>
+
+      <div class="control">
+        <label>Senha:</label>
+        <input type="password" id="passwordInput">
+        <small class="errorPwd" id="errorPwd"></small>
+      </div>
+
+      <button type="button" onclick="logIn()">Acessar</button>
+    </form>
+    <div class="ingressar">
+      <a href="./signup.html">Não possui conta? Crie agora mesmo</a>
+    </div>
+    <script src="./scripts/Script.js" defer></script>
+
+   
+</body>
+
+</html>
